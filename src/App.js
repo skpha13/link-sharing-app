@@ -9,13 +9,11 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Navigation />}>
+        <Route path="/profile" element={<Profile />} />
+        <Route path='/links' element={<Links />} />
 
+        <Route path='/preview' element={<Preview />} />
       </Route>
-
-      <Route path='/profile' element={<Profile />} />
-      <Route path='/links' element={<Links />} />
-
-      <Route path='/preview' element={<Preview />} />
       <Route path='/*' element={<div>Not Found</div>} />
     </Routes>
   );

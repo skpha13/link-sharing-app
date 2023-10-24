@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 const Navigation = () => {
   return (
+    <>
+
     <div className="flex flex-row bg-white m-2 justify-center rounded-lg p-2 justify-between items-center">
       <h2>DevLinks</h2>
       <div>
@@ -26,6 +28,8 @@ const Navigation = () => {
         Preview
       </Link>
     </div>
+    <Outlet/>
+    </>
   );
 };
 
