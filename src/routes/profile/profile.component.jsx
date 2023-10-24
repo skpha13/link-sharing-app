@@ -1,5 +1,6 @@
 import avatar from "../../assets/avatar_01.png";
 import FormItem from "../formItem/formItem.component";
+import axios from "axios";
 
 const Profile = () => {
   const fields = [
@@ -16,6 +17,22 @@ const Profile = () => {
       placeholder: "ben@example.com",
     },
   ];
+
+  const getUserByID = async () => {
+    try {
+      const response = await axios.get("https://localhost:7299/api/User", {
+        withCredentials: true,
+      });
+      console.log("worked");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
+  const User = getUserByID();
+  console.log(User);
 
   return (
     <div className="bg-white rounded-lg m-4 p-4">
