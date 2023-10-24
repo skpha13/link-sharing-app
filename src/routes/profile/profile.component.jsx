@@ -23,7 +23,6 @@ const Profile = () => {
       const response = await axios.get("https://localhost:7299/api/User", {
         withCredentials: true,
       });
-      console.log("worked");
       return response.data;
     } catch (error) {
       console.error(error);
@@ -31,8 +30,12 @@ const Profile = () => {
     }
   };
 
-  const User = getUserByID();
-  console.log(User);
+  const getUser = async () => {
+    const user = await getUserByID();
+    console.log(user);
+  };
+
+  getUser();
 
   return (
     <div className="bg-white rounded-lg m-4 p-4">
