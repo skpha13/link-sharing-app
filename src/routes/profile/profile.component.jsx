@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import avatar from "../../assets/avatar_01.png";
 import FormItem from "../formItem/formItem.component";
 import axios from "axios";
 
 const Profile = () => {
-  const fields = [
+  const [isUserLoaded, setisUserLoaded] = useState(false);
+  const [fields, setFields] = useState([
     {
       label: "First Name*",
       placeholder: "Ben",
@@ -16,26 +18,39 @@ const Profile = () => {
       label: "Email*",
       placeholder: "ben@example.com",
     },
-  ];
+  ]);
 
-  const getUserByID = async () => {
-    try {
-      const response = await axios.get("https://localhost:7299/api/User", {
-        withCredentials: true,
-      });
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
+  useEffect(() => {
+    const getUserByID = async () => {
+      try {
+        const response = await axios.get(
+          "https://localhost:7299/api/User/GetUserById?id=1"
+        );
+        setisUserLoaded(true);
+        const updatedFields = fields.map((field, index) => {
+          switch (index) {
+            case 0:
+              return { ...field, placeholder: response.data.name };
 
-  const getUser = async () => {
-    const user = await getUserByID();
-    console.log(user);
-  };
+            case 1:
+              return { ...field, placeholder: response.data.name };
 
-  getUser();
+            case 2:
+              return { ...field, placeholder: response.data.email };
+
+            default:
+              return { ...field, placeholder: "" };
+          }
+        });
+        setFields(updatedFields);
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    };
+
+    getUserByID();
+  }, [fields]);
 
   return (
     <div className="bg-white rounded-lg m-4 p-4">
@@ -61,17 +76,21 @@ const Profile = () => {
         </p>
       </div>
 
-      <div className="flex flex-col items-center m-4 bg-grey p-4 rounded-lg">
-        {fields.map((field) => {
-          return (
-            <FormItem
-              key={field.label}
-              labelName={field.label}
-              placeholder={field.placeholder}
-            />
-          );
-        })}
-      </div>
+      {isUserLoaded ? (
+        <div className="flex flex-col items-center m-4 bg-grey p-4 rounded-lg">
+          {fields.map((field) => {
+            return (
+              <FormItem
+                key={field.label}
+                labelName={field.label}
+                placeholder={field.placeholder}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
 
       <div className="flex justify-end">
         <button className="bg-indigo-500 text-white p-2 rounded-lg min-w-[64px]">
