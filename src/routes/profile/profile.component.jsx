@@ -5,52 +5,43 @@ import axios from "axios";
 
 const Profile = () => {
   const [isUserLoaded, setisUserLoaded] = useState(false);
-  const [fields, setFields] = useState([
-    {
-      label: "First Name*",
-      placeholder: "Ben",
-    },
-    {
-      label: "Last Name*",
-      placeholder: "Wrigth",
-    },
-    {
-      label: "Email*",
-      placeholder: "ben@example.com",
-    },
-  ]);
+  const [fields, setFields] = useState([]);
+
+  const getUserByID = async () => {
+    try {
+      const response = await axios.get(
+        "https://localhost:7299/api/User/GetUserById?id=1"
+      );
+      let arr = [
+        {
+          label: "First Name*",
+          placeholder: response.data.name,
+        },
+        {
+          label: "Last Name*",
+          placeholder: response.data.name,
+        },
+        {
+          label: "Email*",
+          placeholder: response.data.email,
+        },
+      ];
+      return arr;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
 
   useEffect(() => {
-    const getUserByID = async () => {
-      try {
-        const response = await axios.get(
-          "https://localhost:7299/api/User/GetUserById?id=1"
-        );
-        setisUserLoaded(true);
-        const updatedFields = fields.map((field, index) => {
-          switch (index) {
-            case 0:
-              return { ...field, placeholder: response.data.name };
-
-            case 1:
-              return { ...field, placeholder: response.data.name };
-
-            case 2:
-              return { ...field, placeholder: response.data.email };
-
-            default:
-              return { ...field, placeholder: "" };
-          }
-        });
-        setFields(updatedFields);
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
+    const fetchData = async () => {
+      const arr = await getUserByID();
+      setFields(arr);
+      setisUserLoaded(true);
     };
 
-    getUserByID();
-  }, [fields]);
+    fetchData();
+  }, []);
 
   return (
     <div className="bg-white rounded-lg m-4 p-4">
