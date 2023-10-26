@@ -12,6 +12,7 @@ const Profile = () => {
       const response = await axios.get(
         "https://localhost:7299/api/User/GetUserById?id=1"
       );
+
       let arr = [
         {
           label: "First Name*",
@@ -28,7 +29,9 @@ const Profile = () => {
       ];
       return arr;
     } catch (error) {
-      console.error(error);
+      if (error.response.data.status !== 200)
+        // show something on app
+        console.log(error.response.data.title);
       return [];
     }
   };
@@ -42,6 +45,42 @@ const Profile = () => {
 
     fetchData();
   }, []);
+
+  var name = "";
+  const updateInputData = (value, label) => {
+    if (label === "First Name*") name = value;
+  };
+
+  const updateUser = async () => {
+    try {
+      const response = await axios.put(
+        "https://localhost:7299/api/User/update?id=1",
+        {
+          name: name,
+        }
+      );
+      if (response.status === 200) {
+        // show something on app
+        console.log(response.data);
+        setFields([
+          {
+            label: "First Name*",
+            placeholder: name,
+          },
+          {
+            label: "Last Name*",
+            placeholder: name,
+          },
+          {
+            label: "Email*",
+            placeholder: fields[2].placeholder,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.log(error.response.data.errors.Name[0]);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg m-4 p-4">
@@ -75,6 +114,7 @@ const Profile = () => {
                 key={field.label}
                 labelName={field.label}
                 placeholder={field.placeholder}
+                onChangeHadler={updateInputData}
               />
             );
           })}
@@ -84,7 +124,10 @@ const Profile = () => {
       )}
 
       <div className="flex justify-end">
-        <button className="bg-indigo-500 text-white p-2 rounded-lg min-w-[64px]">
+        <button
+          onClick={updateUser}
+          className="bg-indigo-500 text-white p-2 rounded-lg min-w-[64px]"
+        >
           Save
         </button>
       </div>
